@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import { getCollection } from 'astro:content';
+
+const teaching = (await getCollection('teaching')).sort((a, b) => b.data.year - a.data.year);
+const supervision = (await getCollection('supervision')).sort((a, b) => b.data.year - a.data.year);
+---
+<BaseLayout title="Teaching" section="/teaching">
+  <section class="page">
+    <SectionLabel label="teaching" />
+    <h1>Teaching & Supervision</h1>
+
+    <h2 class="sub">Teaching</h2>
+    <ul class="list">
+      {teaching.map((t) => (
+        <li class="row">
+          <span class="yr">{t.data.year}</span>
+          <div class="main">
+            <span class="title">{t.data.course}</span>
+            <span class="meta">{t.data.role} · {t.data.institution}{t.data.semester ? ` · ${t.data.semester}` : ''}</span>
+            {t.data.url && <a class="link" href={t.data.url}>course page →</a>}
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <h2 class="sub">Supervision</h2>
+    <ul class="list">
+      {supervision.map((s) => (
+        <li class="row">
+          <span class="yr">{s.data.year}</span>
+          <div class="main">
+            <span class="title">{s.data.student} <span class="level">({s.data.level})</span></span>
+            <span class="meta">{s.data.topic} · {s.data.role}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { max-width: var(--container); margin: 0 auto; padding: var(--space-12) var(--gutter); }
+  h1 { font-size: var(--text-2xl); font-weight: 600; }
+  .sub {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--accent);
+    margin-top: var(--space-12);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--rule);
+  }
+  .list { list-style: none; }
+  .row { display: grid; grid-template-columns: 4rem 1fr; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--rule); }
+  .yr { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-faint); }
+  .main { display: flex; flex-direction: column; gap: 0.25rem; }
+  .title { color: var(--text); }
+  .level { color: var(--text-faint); font-family: var(--font-mono); font-size: var(--text-xs); }
+  .meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint); }
+  .link { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--accent); }
+</style>
