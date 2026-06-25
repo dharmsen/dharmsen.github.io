@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import TalkRow from '../../components/TalkRow.astro';
+import { getCollection } from 'astro:content';
+
+const talks = (await getCollection('talks'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const byYear = new Map<number, typeof talks>();
+for (const t of talks) {
+  const y = t.data.date.getFullYear();
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(t);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+<BaseLayout title="Talks" section="/talks">
+  <section class="page">
+    <SectionLabel label="talks" />
+    <h1>Talks & Posters</h1>
+    <p class="intro">Conference talks, posters, tutorials, and invited presentations.</p>
+
+    {years.map((year) => (
+      <section class="year-block">
+        <h2 class="year">{year}</h2>
+        <ul class="list">
+          {byYear.get(year)!.map((entry) => <TalkRow entry={entry} />)}
+        </ul>
+      </section>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .page { max-width: var(--container); margin: 0 auto; padding: var(--space-12) var(--gutter); }
+  h1 { font-size: var(--text-2xl); font-weight: 600; }
+  .intro { color: var(--text-soft); margin-top: var(--space-2); max-width: var(--measure); }
+  .year-block { margin-top: var(--space-8); }
+  .year { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-faint); margin-bottom: var(--space-2); }
+  .list { list-style: none; }
+</style>
