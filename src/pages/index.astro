@@ -1,11 +1,114 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionLabel from '../components/SectionLabel.astro';
 import { site } from '../data/site';
+import { getCollection } from 'astro:content';
+
+const pubs = (await getCollection('publications'))
+  .filter((p) => p.data.highlight)
+  .sort((a, b) => b.data.year - a.data.year);
 ---
 <BaseLayout title={site.name}>
-  <section style="max-width: var(--measure); margin: var(--space-16) auto; padding: 0 var(--gutter);">
-    <h1 style="font-family: var(--font-serif); font-size: var(--text-3xl); font-weight: 500; letter-spacing: -0.015em;">{site.name}</h1>
-    <p style="font-family: var(--font-mono); color: var(--text-faint); margin-top: var(--space-2);">{site.role}</p>
-    <p style="margin-top: var(--space-6); color: var(--text-soft);">{site.shortBio}</p>
+  <section class="hero">
+    <h1 class="name">{site.name}</h1>
+    <p class="role">{site.role}</p>
+    <p class="bio">{site.shortBio}</p>
+    <nav class="hero-links" aria-label="About">
+      <a href="/about">about</a>
+      <span aria-hidden="true">·</span>
+      <a href="/cv">cv</a>
+      <span aria-hidden="true">·</span>
+      <a href="/contact">contact</a>
+    </nav>
+  </section>
+
+  <section class="selected">
+    <SectionLabel label="selected work" />
+    {pubs.length === 0 ? (
+      <p class="empty">No selected work yet — mark publications with <code>highlight: true</code>.</p>
+    ) : (
+      <ul class="pub-list">
+        {pubs.map((p) => (
+          <li class="pub-row">
+            <span class="yr">'{String(p.data.year).slice(-2)}</span>
+            <a href={`/research/${p.id}`} class="title">{p.data.title}</a>
+            <span class="venue">{p.data.venue}</span>
+          </li>
+        ))}
+      </ul>
+    )}
   </section>
 </BaseLayout>
+
+<style>
+  .hero {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: var(--space-16) var(--gutter) var(--space-12);
+  }
+  .name {
+    font-family: var(--font-serif);
+    font-size: var(--text-3xl);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+  }
+  .role {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-faint);
+    margin-top: var(--space-2);
+  }
+  .bio {
+    margin-top: var(--space-6);
+    color: var(--text-soft);
+    font-size: var(--text-lg);
+    line-height: 1.5;
+  }
+  .hero-links {
+    margin-top: var(--space-6);
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-faint);
+  }
+  .hero-links a { color: var(--accent); }
+  .selected {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter) var(--space-12);
+  }
+  .empty {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-faint);
+  }
+  .empty code { color: var(--accent); }
+  .pub-list { list-style: none; }
+  .pub-row {
+    display: grid;
+    grid-template-columns: 3rem 1fr auto;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .pub-row .yr {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-faint);
+  }
+  .pub-row .title {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-soft);
+  }
+  .pub-row .title:hover { color: var(--accent); }
+  .pub-row .venue {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-faint);
+  }
+</style>
