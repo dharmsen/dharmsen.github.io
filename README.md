@@ -1,96 +1,286 @@
-# Academic Pages
-**Academic Pages is a GitHub Pages template for personal and professional portfolio-oriented websites.**
+# dharmsen.github.io
 
-![Academic Pages template example](images/homepage.png "Academic Pages template example")
+Personal academic website for Dalton Harmsen. Built with Astro, deployed to
+GitHub Pages. The visual design lives in `src/styles/tokens.css` — that's
+the single file to edit when you want to change colors, fonts, or spacing.
 
-# Getting Started
+## 1. Overview & aesthetic
 
-1. Register a GitHub account if you don't have one and confirm your e-mail (required!)
-1. Click the "Use this template" button in the top right.
-1. On the "New repository" page, enter your public repository name as "[your GitHub username].github.io", which will also be your website's URL.
-1. Set site-wide configuration and add your content.
-1. Upload any files (like PDFs, .zip files, etc.) to the `files/` directory. They will appear at https://[your GitHub username].github.io/files/example.pdf.
-1. Check status by going to the repository settings, in the "GitHub pages" section
-1. (Optional) Use the Jupyter notebooks or python scripts in the `markdown_generator` folder to generate markdown files for publications and talks from a TSV file.
+This is an academic-first personal site with a write-ups blog and a hobby
+blog. The aesthetic is **editorial hybrid on warm paper**: serif name
+(EB Garamond), sans body (Inter), mono labels/dates/venues (JetBrains Mono),
+single configurable accent color (Ink).
 
-See more info at https://academicpages.github.io/
+## 2. Tech stack
 
-## Running locally
+- **Astro 5+** — static site generator, zero JS by default
+- **Content collections** typed with Zod schemas
+- **Self-hosted fonts** via `@fontsource/*`
+- **GitHub Actions** builds and deploys to GitHub Pages on push to `main`
+- **Web3Forms** handles the contact form (no signup needed)
 
-When you are initially working on your website, it is very useful to be able to preview the changes locally before pushing them to GitHub. To work locally you will need to:
+## 3. Project structure
 
-1. Clone the repository and made updates as detailed above.
-
-### Using a different IDE
-1. Make sure you have ruby-dev, bundler, and nodejs installed
-    
-    On most Linux distribution and [Windows Subsystem Linux](https://learn.microsoft.com/en-us/windows/wsl/about) the command is:
-    ```bash
-    sudo apt install ruby-dev ruby-bundler nodejs
-    ```
-    If you see error `Unable to locate package ruby-bundler`, `Unable to locate package nodejs `, run the following:
-    ```bash
-    sudo apt update && sudo apt upgrade -y
-    ```
-    then try run `sudo apt install ruby-dev ruby-bundler nodejs` again.
-
-    On MacOS the commands are:
-    ```bash
-    brew install ruby
-    brew install node
-    gem install bundler
-    ```
-1. Run `bundle install` to install ruby dependencies. If you get errors, delete Gemfile.lock and try again.
-
-    If you see file permission error like `Fetching bundler-2.6.3.gem ERROR:  While executing gem (Gem::FilePermissionError) You don't have write permissions for the /var/lib/gems/3.2.0 directory.` or `Bundler::PermissionError: There was an error while trying to write to /usr/local/bin.`
-    Install Gems Locally (Recommended):
-    ```bash
-    bundle config set --local path 'vendor/bundle'
-    ```
-    then try run `bundle install` again. If succeeded, you should see a folder called `vendor` and `.bundle`.
-
-1. Run `jekyll serve -l -H localhost` to generate the HTML and serve it from `localhost:4000` the local server will automatically rebuild and refresh the pages on change.
-    You may also try `bundle exec jekyll serve -l -H localhost` to ensure jekyll to use specific dependencies on your own local machine.
-
-If you are running on Linux it may be necessary to install some additional dependencies prior to being able to run locally: `sudo apt install build-essential gcc make`
-
-## Using Docker
-
-Working from a different OS, or just want to avoid installing dependencies? You can use the provided `Dockerfile` to build a container that will run the site for you if you have [Docker](https://www.docker.com/) installed.
-
-You can build and execute the container by running the following command in the repository:
-
-```bash
-chmod -R 777 .
-docker compose up
+```
+src/
+  content/            Markdown entries, one folder per collection
+  content.config.ts   Zod schemas for every collection
+  data/site.ts        Site name, role, shortBio, socials, nav
+  layouts/            BaseLayout.astro (html shell)
+  components/         Header, Footer, PaperRow, TalkRow, etc.
+  pages/              Routes map directly to URLs
+  styles/
+    tokens.css        Colors, fonts, type scale, spacing — edit this
+    base.css          Reset, font imports, base styles
+public/               Static assets (cv.pdf, favicon.svg, images/)
+astro.config.mjs      Site URL, sitemap integration
+tsconfig.json         Astro strict preset
+.env (gitignored)     WEB3FORMS_ACCESS_KEY
 ```
 
-You should now be able to access the website from `localhost:4000`.
+## 4. Local development
 
-### Using the DevContainer in VS Code
+```bash
+npm install
+npm run dev       # http://localhost:4321, hot reload
+npm run build     # type-check + build to dist/
+npm run preview   # serve the built dist/ locally
+```
 
-If you are using [Visual Studio Code](https://code.visualstudio.com/) you can use the [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers) that comes with this Repository. Normally VS Code detects that a development coontainer configuration is available and asks you if you want to use the container. If this doesn't happen you can manually start the container by **F1->DevContainer: Reopen in Container**. This restarts your VS Code in the container and automatically hosts your academic page locally on http://localhost:4000. All changes will be updated live to that page after a few seconds.
+Node 20+ is required.
 
-# Maintenance
+## 5. Authoring content
 
-Bug reports and feature requests to the template should be [submitted via GitHub](https://github.com/academicpages/academicpages.github.io/issues/new/choose). For questions concerning how to style the template, please feel free to start a [new discussion on GitHub](https://github.com/academicpages/academicpages.github.io/discussions).
+Every collection lives under `src/content/`. Each file is a Markdown file
+with YAML frontmatter. Schemas are enforced — typos fail the build.
 
-This repository was forked (then detached) by [Stuart Geiger](https://github.com/staeiou) from the [Minimal Mistakes Jekyll Theme](https://mmistakes.github.io/minimal-mistakes/), which is © 2016 Michael Rose and released under the MIT License (see LICENSE.md). It is currently being maintained by [Robert Zupko](https://github.com/rjzupkoii) and additional maintainers would be welcomed.
+### Publications — `src/content/publications/*.md`
 
-## Bugfixes and enhancements
-
-If you have bugfixes and enhancements that you would like to submit as a pull request, you will need to [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) this repository as opposed to using it as a template. This will also allow you to [synchronize your copy](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) of template to your fork as well.
-
-Unfortunately, one logistical issue with a template theme like Academic Pages that makes it a little tricky to get bug fixes and updates to the core theme. If you use this template and customize it, you will probably get merge conflicts if you attempt to synchronize. If you want to save your various .yml configuration files and markdown files, you can delete the repository and fork it again. Or you can manually patch.
-
+```yaml
 ---
-<div align="center">
-    
-![pages-build-deployment](https://github.com/academicpages/academicpages.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)
-[![GitHub contributors](https://img.shields.io/github/contributors/academicpages/academicpages.github.io.svg)](https://github.com/academicpages/academicpages.github.io/graphs/contributors)
-[![GitHub release](https://img.shields.io/github/v/release/academicpages/academicpages.github.io)](https://github.com/academicpages/academicpages.github.io/releases/latest)
-[![GitHub license](https://img.shields.io/github/license/academicpages/academicpages.github.io?color=blue)](https://github.com/academicpages/academicpages.github.io/blob/master/LICENSE)
+title: "Sparse routing for mixture-of-experts"
+authors: ["Dalton Harmsen", "Ada Lovelace"]
+venue: "NeurIPS"
+year: 2025
+type: "conference"          # conference | journal | workshop | preprint | thesis
+pdf: "/papers/sparse-moe.pdf"      # optional
+arxiv: "2501.12345"                # optional
+doi: "..."                         # optional
+code: "https://github.com/..."     # optional
+slides: "/slides/..."              # optional
+highlight: false                   # optional — surfaces on homepage
+---
+Optional Markdown abstract or notes.
+```
 
-[![GitHub stars](https://img.shields.io/github/stars/academicpages/academicpages.github.io)](https://github.com/academicpages/academicpages.github.io)
-[![GitHub forks](https://img.shields.io/github/forks/academicpages/academicpages.github.io)](https://github.com/academicpages/academicpages.github.io/fork)
-</div>
+Set `highlight: true` to feature on the homepage. Delete `_example.md` once
+you've added your own.
+
+### Talks — `src/content/talks/*.md`
+
+```yaml
+---
+title: "Efficient inference for LLMs"
+venue: "NeurIPS Workshop on Efficient ML"
+date: 2025-12-10
+type: "talk"                # talk | poster | tutorial | invited
+location: "Vancouver, Canada"
+slides: "/slides/..."       # optional
+---
+```
+
+### Teaching — `src/content/teaching/*.md`
+
+```yaml
+---
+course: "Deep Learning (5IMA0)"
+role: "Teaching Assistant"
+institution: "Eindhoven University of Technology"
+year: 2025
+semester: "Q3"              # optional
+url: "..."                  # optional
+---
+```
+
+### Supervision — `src/content/supervision/*.md`
+
+```yaml
+---
+student: "Jane Doe"
+level: "MSc"                # BSc | MSc | PhD
+topic: "Efficient attention mechanisms"
+year: 2025
+role: "co-supervisor"
+---
+```
+
+### Notes — `src/content/notes/*.md`
+
+```yaml
+---
+title: "Why sparsity matters for LLM inference"
+date: 2025-06-12
+description: "A short note on the compute economics of sparse routing."
+draft: false                # drafts hidden in prod build, visible in dev
+tags: ["sparsity", "inference"]   # optional
+---
+Full Markdown body.
+```
+
+### Hobby categories — `src/content/hobbies/*.md`
+
+```yaml
+---
+title: "Photography"
+description: "Mostly 35mm film, occasionally digital."   # optional
+order: 1                          # optional — if omitted, alphabetical
+image: "/images/hobby/photography.jpg"   # optional
+---
+Optional intro Markdown for the category page.
+```
+
+### Hobby posts — `src/content/hobby-posts/*.md`
+
+```yaml
+---
+title: "A weekend in Drenthe"
+date: 2025-06-15
+hobby: photography          # MUST match a hobbies/ filename (no extension)
+draft: false
+tags: ["film", "roadtrip"]  # optional
+---
+Markdown body.
+```
+
+If `hobby:` references a category that doesn't exist, the build fails with a
+clear error naming the offending file.
+
+### About — `src/content/about.md`
+
+Single Markdown file rendered at `/about`. Standard headings (h2) are
+auto-styled as mono section labels.
+
+### CV — `src/content/cv.md`
+
+Single Markdown file rendered at `/cv` with a "Download PDF" button linking
+to `/cv.pdf`. Keep them visually in sync by hand.
+
+## 6. Adding a new collection
+
+1. Create `src/content/<name>/` and drop a `.md` file in it.
+2. Add ~5 lines to `src/content.config.ts`:
+
+```ts
+const courses = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/courses' }),
+  schema: z.object({
+    title: z.string(),
+    year: z.number().int(),
+  }),
+});
+
+export const collections = { /* existing */, courses };
+```
+
+3. Add the listing route `src/pages/<name>/index.astro` (copy any existing
+   one as a template).
+4. (Optional) add a nav entry in `src/data/site.ts`.
+
+No build config changes, no plugin registration.
+
+## 7. Adding a new page (not a collection)
+
+Drop a `.md` or `.astro` file in `src/pages/`. The filename becomes the URL.
+`src/pages/uses.md` → `/uses`. For Markdown files, frontmatter is optional.
+
+## 8. Adjusting the design
+
+Every visual change has exactly one place to make it:
+
+| Change                     | File                              |
+|----------------------------|-----------------------------------|
+| Colors (light/dark)        | `src/styles/tokens.css`           |
+| Fonts                      | `src/styles/tokens.css` + `@fontsource/*` in `base.css` |
+| Type sizes                 | `src/styles/tokens.css` (`--text-*`) |
+| Spacing                    | `src/styles/tokens.css` (`--space-*`) |
+| Page width / prose width   | `src/styles/tokens.css` (`--container`, `--measure`) |
+| Site name / role / bio     | `src/data/site.ts`                |
+| Social links               | `src/data/site.ts`                |
+| Nav items                  | `src/data/site.ts`                |
+| Default theme              | `<html data-theme="light">` in `BaseLayout.astro` |
+| Homepage hero layout       | `src/pages/index.astro`           |
+| A list row's appearance    | the matching `*Row.astro` in `src/components/` |
+| A detail page's layout     | the matching `[slug].astro` in `src/pages/<section>/` |
+
+### Color tokens
+
+The full set lives at the top of `tokens.css`. Light is the default; dark is
+under `[data-theme="dark"]`. Edit only the values — the rest of the site
+reads them via `var(--bg)`, `var(--accent)`, etc.
+
+### Design principles (conventions to preserve)
+
+- **Hairlines** are `1px solid var(--rule)` — never thicker.
+- **Section labels** are mono, `--text-xs`, uppercase, `letter-spacing: 0.13em`.
+- **Links** are `var(--accent)`, underline offset 3px, thickness 1px → 2px on hover.
+- **Type scale** is 1.25 ratio. Hero name uses `clamp(2rem, 5vw, 2.625rem)`.
+- **Container width** is 64rem (lists); **prose width** is 38rem (long-form).
+- **Components stay under ~60 lines.** Single-purpose. When one grows past
+  that, it's doing too much — split it.
+
+## 9. Theme toggle
+
+The site defaults to **light**. A sun/moon button in the header switches to
+dark. The choice persists in `localStorage['theme']`. An inline script in
+`BaseLayout.astro`'s `<head>` applies the theme before paint (no flash).
+
+Dark tokens are gated on `[data-theme="dark"]`. The site does NOT auto-follow
+the OS preference — default is always light unless the user toggles.
+
+## 10. Email / contact
+
+**There is no plaintext email anywhere in this repo.** Not in HTML, not in
+JS, not encoded. This is by design — the address is impossible to scrape
+because it isn't here.
+
+- `/contact` hosts a form backed by Web3Forms. The access key is read from
+  `WEB3FORMS_ACCESS_KEY` in `.env` (gitignored — see `.env.example`).
+- The real address lives only in the Web3Forms dashboard.
+- Footer links to Scholar, GitHub, LinkedIn, X cover the "I just want to
+  find you" path.
+
+## 11. Deployment
+
+Push to `main`:
+
+```bash
+git push origin main
+```
+
+The GitHub Actions workflow at `.github/workflows/deploy.yml` runs
+`npm run build` and uploads `dist/` to GitHub Pages. Build failures block
+deploy and email the repo owner. First-time setup:
+1. Enable Actions and Pages in the repo settings (Pages → source: GitHub Actions).
+2. Create a Web3Forms access key at https://web3forms.com (no signup needed).
+3. Add it as a repository secret named `WEB3FORMS_ACCESS_KEY` (Settings →
+   Secrets and variables → Actions → New repository secret). Without this,
+   the contact form renders but submissions silently fail.
+
+## 12. Verification commands
+
+```bash
+npm run build            # Type-check + build. Fails on any schema/import error.
+npm run check:links      # Walks dist/, fails on any 404.
+```
+
+(For periodic Lighthouse audits: `npx lighthouse http://localhost:4321 --view`.
+Not bundled — install on demand.)
+
+The build IS the test suite for a static site — no unit tests, no business
+logic to test. Run `check:links` before merging.
+
+## 13. Where to learn more
+
+The full design rationale lives in
+`docs/superpowers/specs/2026-06-25-website-overhaul-design.md`. Read it if
+you want the "why" behind any decision.

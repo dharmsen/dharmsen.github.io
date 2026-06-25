@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const items = await getCollection('talks');
+  return items.map((t) => ({ params: { slug: t.id }, props: { entry: t } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, venue, date, type, location, slides } = entry.data;
+const fmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<BaseLayout title={title} section="/talks">
+  <article class="talk">
+    <p class="crumb"><a href="/talks">talks</a> ›</p>
+    <h1>{title}</h1>
+    <p class="meta">
+      <span>{fmt.format(date)}</span>
+      <span>·</span>
+      <span>{venue}</span>
+      <span>·</span>
+      <span>{location}</span>
+      <span>·</span>
+      <span class="type">{type}</span>
+    </p>
+    {slides && <p class="links"><a href={slides}>slides</a></p>}
+    <div class="body"><Content /></div>
+    <p class="back"><a href="/talks">← back to talks</a></p>
+  </article>
+</BaseLayout>
+
+<style>
+  .talk { max-width: var(--measure); margin: 0 auto; padding: var(--space-12) var(--gutter); }
+  .crumb { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint); }
+  .crumb a { color: var(--text-faint); }
+  h1 { font-size: var(--text-2xl); font-weight: 600; margin-top: var(--space-2); }
+  .meta { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-faint); }
+  .meta .type { text-transform: uppercase; letter-spacing: 0.1em; }
+  .links { margin-top: var(--space-4); font-family: var(--font-mono); font-size: var(--text-sm); }
+  .body { margin-top: var(--space-8); }
+  .back { margin-top: var(--space-12); font-family: var(--font-mono); font-size: var(--text-sm); }
+</style>

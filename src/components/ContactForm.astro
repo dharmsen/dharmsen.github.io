@@ -1,0 +1,103 @@
+---
+const accessKey = import.meta.env.WEB3FORMS_ACCESS_KEY;
+
+if (!accessKey) {
+  console.warn('[ContactForm] WEB3FORMS_ACCESS_KEY is not set. The contact form will render but submissions will fail until it is configured. See README §11 (Deployment).');
+}
+---
+<form
+  action="https://api.web3forms.com/submit"
+  method="POST"
+  class="form"
+  data-form
+>
+  <input type="hidden" name="access_key" value={accessKey} />
+  <input type="hidden" name="subject" value="New message via dharmsen.github.io" />
+  <input type="checkbox" name="botcheck" class="honeypot" tabindex="-1" autocomplete="off" />
+
+  <label class="field">
+    <span>name</span>
+    <input type="text" name="name" required autocomplete="name" />
+  </label>
+
+  <label class="field">
+    <span>reply-to</span>
+    <input type="email" name="email" required autocomplete="email" />
+  </label>
+
+  <label class="field">
+    <span>message</span>
+    <textarea name="message" rows="6" required></textarea>
+  </label>
+
+  <button type="submit" class="submit">send →</button>
+
+  <p class="status" data-status hidden></p>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-form]');
+  const status = document.querySelector<HTMLParagraphElement>('[data-status]');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!status || !form) return;
+    status.hidden = false;
+    status.textContent = 'sending…';
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
+      });
+      const json = await res.json();
+      if (json.success) {
+        form.reset();
+        status.textContent = 'thanks — your message is on its way.';
+      } else {
+        status.textContent = 'something went wrong. please try again.';
+      }
+    } catch {
+      status.textContent = 'network error. please try again.';
+    }
+  });
+</script>
+
+<style>
+  .form { display: flex; flex-direction: column; gap: var(--space-4); max-width: var(--measure); }
+  .honeypot { display: none; }
+  .field { display: flex; flex-direction: column; gap: var(--space-2); }
+  .field span {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+  }
+  .field input, .field textarea {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    background: var(--bg-elev);
+    color: var(--text);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: var(--space-3);
+  }
+  .field input:focus, .field textarea:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 0;
+    border-color: var(--accent);
+  }
+  .submit {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--bg);
+    background: var(--accent);
+    padding: var(--space-3) var(--space-6);
+    border-radius: 4px;
+  }
+  .submit:hover { background: var(--text); }
+  .status { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-soft); }
+</style>

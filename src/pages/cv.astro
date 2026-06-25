@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionLabel from '../components/SectionLabel.astro';
+import { getEntry, render } from 'astro:content';
+
+const entry = await getEntry('cv', 'cv');
+const { Content } = await render(entry);
+---
+<BaseLayout title="CV">
+  <section class="page">
+    <SectionLabel label="cv" />
+    <a href="/cv.pdf" class="pdf">download pdf ↓</a>
+    <article class="prose">
+      <Content />
+    </article>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { max-width: var(--measure); margin: 0 auto; padding: var(--space-12) var(--gutter); position: relative; }
+  .pdf {
+    position: absolute;
+    top: var(--space-12);
+    right: var(--gutter);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  :global(.prose h1) { font-size: var(--text-2xl); font-weight: 600; margin-bottom: var(--space-4); }
+  :global(.prose h2) { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.13em; color: var(--accent); margin-top: var(--space-8); padding-bottom: var(--space-2); border-bottom: 1px solid var(--rule); }
+  :global(.prose p), :global(.prose ul) { color: var(--text-soft); margin-top: var(--space-4); }
+  :global(.prose ul) { padding-left: var(--space-6); }
+  :global(.prose li) { margin-top: var(--space-2); }
+</style>

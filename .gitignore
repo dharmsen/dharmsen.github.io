@@ -10,7 +10,10 @@ Gemfile.lock
 
 # Ignore files created by npm
 node_modules
-package-lock.json
+
+# Ignore Astro build output and cache
+dist/
+.astro/
 
 # Ignore the vendor file and bundle for alternative installation
 vendor/
@@ -18,3 +21,11 @@ vendor/
 
 # Ignore folders related to IDEs
 .vscode/
+
+# Ignore brainstorming companion artifacts
+.superpowers/
+
+# Ignore local env files (Web3Forms access key, etc.)
+.env
+.env.*
+!.env.example

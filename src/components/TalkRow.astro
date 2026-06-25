@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+const { entry } = Astro.props as { entry: CollectionEntry<'talks'> };
+const { title, venue, date, type, location } = entry.data;
+const yr = date.getFullYear();
+---
+<li class="row">
+  <span class="yr">{yr}</span>
+  <div class="main">
+    <a href={`/talks/${entry.id}`} class="title">{title}</a>
+    <span class="meta">{venue} · {location}</span>
+  </div>
+  <span class="type">{type}</span>
+</li>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: 4rem 1fr auto;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .yr { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-faint); }
+  .main { display: flex; flex-direction: column; gap: 0.25rem; }
+  .title { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--accent-soft); }
+  .title:hover { color: var(--accent); }
+  .meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint); }
+  .type { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); }
+</style>
