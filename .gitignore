@@ -18,3 +18,11 @@ vendor/
 
 # Ignore folders related to IDEs
 .vscode/
+
+# Ignore brainstorming companion artifacts
+.superpowers/
+
+# Ignore local env files (Web3Forms access key, etc.)
+.env
+.env.*
+!.env.example
