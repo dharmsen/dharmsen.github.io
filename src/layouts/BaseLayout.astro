@@ -1,0 +1,54 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+
+const {
+  title,
+  description = 'Personal website of Dalton Harmsen — PhD student in AI Foundation Models at TU Eindhoven.',
+  section,
+} = Astro.props as {
+  title: string;
+  description?: string;
+  section?: string;
+};
+
+const fullTitle = title === site.name ? title : `${title} · ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <!-- No-flash theme init: must run before body paints -->
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          document.documentElement.dataset.theme = (t === 'dark' || t === 'light') ? t : 'light';
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <Header current={section} />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,95 @@
+---
+import { site } from '../data/site';
+import ThemeToggle from './ThemeToggle.astro';
+
+const { current } = Astro.props as { current?: string };
+---
+
+<header class="site-header">
+  <div class="inner">
+    <a href="/" class="brand">{site.name}</a>
+
+    <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <path d="M3 6h18M3 12h18M3 18h18" />
+      </svg>
+    </button>
+
+    <nav id="site-nav" class="nav" aria-label="Primary">
+      {site.nav.map((item) => (
+        <a
+          href={item.href}
+          class:list={['nav-item', { active: current === item.href }]}
+        >{item.label}</a>
+      ))}
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('nav-toggle');
+  const nav = document.getElementById('site-nav');
+  btn?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(Boolean(open)));
+  });
+</script>
+
+<style>
+  .site-header {
+    background: var(--bg);
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: var(--space-4) var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .brand {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .nav { display: flex; align-items: center; gap: var(--space-6); }
+  .nav-item {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--text-faint);
+    text-decoration: none;
+    padding: var(--space-1) 0;
+    border-bottom: 1px solid transparent;
+  }
+  .nav-item:hover { color: var(--text); }
+  .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .nav-toggle { display: none; color: var(--text); }
+
+  @media (max-width: 640px) {
+    .nav-toggle { display: inline-flex; }
+    .nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-3);
+      background: var(--bg);
+      border-bottom: 1px solid var(--rule);
+      padding: var(--space-4) var(--gutter);
+      display: none;
+    }
+    .nav.open { display: flex; }
+  }
+</style>

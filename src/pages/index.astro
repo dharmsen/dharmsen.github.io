@@ -1,17 +1,11 @@
 ---
-import '../styles/tokens.css';
-import '../styles/base.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
 ---
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dalton Harmsen</title>
-  </head>
-  <body>
-    <main style="max-width: 38rem; margin: 6rem auto; padding: 0 1.5rem;">
-      <h1 style="font-family: var(--font-serif); font-size: var(--text-3xl);">Dalton Harmsen</h1>
-      <p style="font-family: var(--font-mono); color: var(--text-faint); margin-top: 0.5rem;">scaffold works</p>
-    </main>
-  </body>
-</html>
+<BaseLayout title={site.name}>
+  <section style="max-width: var(--measure); margin: var(--space-16) auto; padding: 0 var(--gutter);">
+    <h1 style="font-family: var(--font-serif); font-size: var(--text-3xl); font-weight: 500; letter-spacing: -0.015em;">{site.name}</h1>
+    <p style="font-family: var(--font-mono); color: var(--text-faint); margin-top: var(--space-2);">{site.role}</p>
+    <p style="margin-top: var(--space-6); color: var(--text-soft);">{site.shortBio}</p>
+  </section>
+</BaseLayout>

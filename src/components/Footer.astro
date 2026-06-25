@@ -1,0 +1,45 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="inner">
+    <nav class="socials" aria-label="Elsewhere">
+      <a href={site.social.scholar}>scholar</a>
+      <a href={site.social.github}>github</a>
+      <a href={site.social.linkedin}>linkedin</a>
+      <a href={site.social.x}>x</a>
+    </nav>
+    <p class="copy">© {year} {site.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { border-top: 1px solid var(--rule); margin-top: var(--space-24); }
+  .inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: var(--space-6) var(--gutter);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    justify-content: space-between;
+    align-items: center;
+  }
+  .socials { display: flex; gap: var(--space-4); }
+  .socials a {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--text-faint);
+    text-decoration: none;
+  }
+  .socials a:hover { color: var(--accent); }
+  .copy {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-faint);
+  }
+</style>

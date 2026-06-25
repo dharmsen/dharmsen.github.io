@@ -1,0 +1,19 @@
+---
+const { label, accent = true } = Astro.props as { label: string; accent?: boolean };
+---
+
+<div class:list={['section-label', { accent }]}>{label}</div>
+
+<style>
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--text-faint);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-label.accent { color: var(--accent); }
+</style>
