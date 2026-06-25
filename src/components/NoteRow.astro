@@ -1,0 +1,22 @@
+---
+import type { CollectionEntry } from 'astro:content';
+const { entry } = Astro.props as { entry: CollectionEntry<'notes'> };
+const { title, date, description } = entry.data;
+const fmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+<li class="row">
+  <span class="date">{fmt.format(date)}</span>
+  <div class="main">
+    <a href={`/notes/${entry.id}`} class="title">{title}</a>
+    <p class="desc">{description}</p>
+  </div>
+</li>
+
+<style>
+  .row { display: grid; grid-template-columns: 9rem 1fr; gap: var(--space-4); padding: var(--space-4) 0; border-bottom: 1px solid var(--rule); }
+  .date { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-faint); padding-top: 2px; }
+  .main { display: flex; flex-direction: column; gap: 0.25rem; }
+  .title { color: var(--text); text-decoration: none; font-size: var(--text-lg); border-bottom: 1px solid transparent; }
+  .title:hover { color: var(--accent); border-bottom-color: var(--accent-soft); }
+  .desc { color: var(--text-soft); font-size: var(--text-sm); }
+</style>
