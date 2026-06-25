@@ -8,7 +8,7 @@ export async function GET(context) {
 
   return rss({
     title: 'Dalton Harmsen — Notes',
-    description: 'Short write-ups, half-baked ideas, and reference posts.',
+    description: 'Short write-ups, ideas, blog posts, brain dumps.',
     site: context.site,
     items: notes.map((n) => ({
       title: n.data.title,

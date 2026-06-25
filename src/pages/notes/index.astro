@@ -13,7 +13,7 @@ const notes = (await getCollection('notes'))
   <section class="page">
     <SectionLabel label="notes" />
     <h1>Notes</h1>
-    <p class="intro">Short write-ups, half-baked ideas, and reference posts.</p>
+    <p class="intro">Short write-ups, ideas, blog posts, brain dumps.</p>
     <ul class="list">
       {notes.map((entry) => <NoteRow entry={entry} />)}
     </ul>

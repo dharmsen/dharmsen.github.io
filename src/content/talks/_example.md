@@ -1,5 +1,5 @@
 ---
-title: "Efficient inference for LLMs"
+title: "FAKE PLACEHOLDER - Efficient inference for LLMs"
 venue: "NeurIPS Workshop on Efficient ML"
 date: 2025-12-10
 type: "talk"
