@@ -1,5 +1,6 @@
 export const site = {
   name: 'Dalton Harmsen',
+  avatar: '/images/profile.jpg',
   role: 'phd candidate · ai foundation models · tue / openeurollm',
   shortBio:
     'PhD candidate in the AMOR/e lab at Eindhoven University of Technology working on open-source multilingual foundation models in the OpenEuroLLM project.',

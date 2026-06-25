@@ -10,16 +10,19 @@ const pubs = (await getCollection('publications'))
 ---
 <BaseLayout title={site.name}>
   <section class="hero">
-    <h1 class="name">{site.name}</h1>
-    <p class="role">{site.role}</p>
-    <p class="bio">{site.shortBio}</p>
-    <nav class="hero-links" aria-label="About">
-      <a href="/about">about</a>
-      <span aria-hidden="true">·</span>
-      <a href="/cv">cv</a>
-      <span aria-hidden="true">·</span>
-      <a href="/contact">contact</a>
-    </nav>
+    <img class="avatar" src={site.avatar} alt={`Portrait of ${site.name}`} width="96" height="96" />
+    <div class="hero-body">
+      <h1 class="name">{site.name}</h1>
+      <p class="role">{site.role}</p>
+      <p class="bio">{site.shortBio}</p>
+      <nav class="hero-links" aria-label="About">
+        <a href="/about">about</a>
+        <span aria-hidden="true">·</span>
+        <a href="/cv">cv</a>
+        <span aria-hidden="true">·</span>
+        <a href="/contact">contact</a>
+      </nav>
+    </div>
   </section>
 
   <section class="selected">
@@ -45,6 +48,21 @@ const pubs = (await getCollection('publications'))
     max-width: var(--measure);
     margin: 0 auto;
     padding: var(--space-16) var(--gutter) var(--space-12);
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+  .avatar {
+    width: clamp(4.5rem, 10vw, 6rem);
+    height: clamp(4.5rem, 10vw, 6rem);
+    flex-shrink: 0;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--rule);
+  }
+  .hero-body { min-width: 0; }
+  @media (max-width: 480px) {
+    .hero { flex-direction: column; align-items: flex-start; }
   }
   .name {
     font-family: var(--font-serif);
