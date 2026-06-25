@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 const { entry } = Astro.props as { entry: CollectionEntry<'publications'> };
 const { title, authors, venue, year, type } = entry.data;
 ---
-<li class="row">
+<li class="row" data-type={type}>
   <span class="yr">'{String(year).slice(-2)}</span>
   <div class="main">
     <a href={`/research/${entry.id}`} class="title">{title}</a>

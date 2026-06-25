@@ -4,13 +4,9 @@ import SectionLabel from '../../components/SectionLabel.astro';
 import PaperRow from '../../components/PaperRow.astro';
 import { getCollection } from 'astro:content';
 
-const all = await getCollection('publications');
-const types = ['all', 'conference', 'journal', 'workshop', 'preprint', 'thesis'] as const;
-const activeType = (Astro.url.searchParams.get('type') ?? 'all') as (typeof types)[number];
-
-const filtered = all
-  .filter((p) => activeType === 'all' || p.data.type === activeType)
+const all = (await getCollection('publications'))
   .sort((a, b) => Number(b.data.highlight) - Number(a.data.highlight) || b.data.year - a.data.year);
+const types = ['all', 'conference', 'journal', 'workshop', 'preprint', 'thesis'] as const;
 ---
 <BaseLayout title="Research" section="/research">
   <section class="page">
@@ -22,16 +18,31 @@ const filtered = all
       {types.map((t) => (
         <a
           href={t === 'all' ? '/research' : `/research?type=${t}`}
-          class:list={['chip', { active: t === activeType }]}
+          class="chip"
+          data-type={t}
         >{t}</a>
       ))}
     </nav>
 
     <ul class="list">
-      {filtered.map((entry) => <PaperRow entry={entry} />)}
+      {all.map((entry) => <PaperRow entry={entry} />)}
     </ul>
   </section>
 </BaseLayout>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get('type');
+  const rows = document.querySelectorAll<HTMLLIElement>('.list .row[data-type]');
+  const chips = document.querySelectorAll<HTMLAnchorElement>('.chip[data-type]');
+
+  chips.forEach((c) => c.classList.toggle('active', c.dataset.type === (type ?? 'all')));
+
+  rows.forEach((r) => {
+    const show = !type || type === 'all' || r.dataset.type === type;
+    r.style.display = show ? '' : 'none';
+  });
+</script>
 
 <style>
   .page { max-width: var(--container); margin: 0 auto; padding: var(--space-12) var(--gutter); }
