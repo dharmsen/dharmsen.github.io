@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const pubs = await getCollection('publications');
+  return pubs.map((p) => ({ params: { slug: p.id }, props: { entry: p } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, authors, venue, year, type, pdf, arxiv, doi, code, slides } = entry.data;
+
+const bibtex = `@${type}{${entry.id},
+  title  = {${title}},
+  author = {${authors.join(' and ')}},
+  venue  = {${venue}},
+  year   = {${year}},
+}`;
+---
+<BaseLayout title={title} section="/research">
+  <article class="paper">
+    <p class="crumb"><a href="/research">research</a> ›</p>
+    <h1>{title}</h1>
+    <p class="authors">{authors.join(', ')}</p>
+    <p class="meta">
+      <span>{venue} {year}</span>
+      <span>·</span>
+      <span class="type">{type}</span>
+    </p>
+
+    {(pdf || arxiv || doi || code || slides) && (
+      <nav class="links" aria-label="Paper links">
+        {pdf && <a href={pdf}>pdf</a>}
+        {arxiv && <a href={`https://arxiv.org/abs/${arxiv}`}>arxiv</a>}
+        {doi && <a href={`https://doi.org/${doi}`}>doi</a>}
+        {code && <a href={code}>code</a>}
+        {slides && <a href={slides}>slides</a>}
+      </nav>
+    )}
+
+    <details class="bibtex">
+      <summary>Cite (BibTeX)</summary>
+      <pre><code>{bibtex}</code></pre>
+    </details>
+
+    <div class="body">
+      <Content />
+    </div>
+
+    <p class="back"><a href="/research">← back to research</a></p>
+  </article>
+</BaseLayout>
+
+<style>
+  .paper { max-width: var(--measure); margin: 0 auto; padding: var(--space-12) var(--gutter); }
+  .crumb { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint); }
+  .crumb a { color: var(--text-faint); }
+  h1 { font-size: var(--text-2xl); font-weight: 600; margin-top: var(--space-2); }
+  .authors { color: var(--text-soft); margin-top: var(--space-2); }
+  .meta {
+    display: flex; gap: var(--space-2); align-items: center;
+    font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-faint);
+    margin-top: var(--space-1);
+  }
+  .meta .type { text-transform: uppercase; letter-spacing: 0.1em; }
+  .links { display: flex; gap: var(--space-4); margin-top: var(--space-4); font-family: var(--font-mono); font-size: var(--text-sm); }
+  .bibtex { margin-top: var(--space-6); border-top: 1px solid var(--rule); padding-top: var(--space-4); }
+  .bibtex summary { cursor: pointer; font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); }
+  .bibtex pre { margin-top: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-soft); white-space: pre-wrap; }
+  .body { margin-top: var(--space-8); }
+  .back { margin-top: var(--space-12); font-family: var(--font-mono); font-size: var(--text-sm); }
+</style>

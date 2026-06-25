@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import PaperRow from '../../components/PaperRow.astro';
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('publications');
+const types = ['all', 'conference', 'journal', 'workshop', 'preprint', 'thesis'] as const;
+const activeType = (Astro.url.searchParams.get('type') ?? 'all') as (typeof types)[number];
+
+const filtered = all
+  .filter((p) => activeType === 'all' || p.data.type === activeType)
+  .sort((a, b) => Number(b.data.highlight) - Number(a.data.highlight) || b.data.year - a.data.year);
+---
+<BaseLayout title="Research" section="/research">
+  <section class="page">
+    <SectionLabel label="research" />
+    <h1>Publications</h1>
+    <p class="intro">Selected papers on efficient inference for large language models.</p>
+
+    <nav class="filters" aria-label="Filter by type">
+      {types.map((t) => (
+        <a
+          href={t === 'all' ? '/research' : `/research?type=${t}`}
+          class:list={['chip', { active: t === activeType }]}
+        >{t}</a>
+      ))}
+    </nav>
+
+    <ul class="list">
+      {filtered.map((entry) => <PaperRow entry={entry} />)}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { max-width: var(--container); margin: 0 auto; padding: var(--space-12) var(--gutter); }
+  h1 { font-size: var(--text-2xl); font-weight: 600; }
+  .intro { color: var(--text-soft); margin-top: var(--space-2); max-width: var(--measure); }
+  .filters { display: flex; gap: var(--space-2); flex-wrap: wrap; margin: var(--space-8) 0 var(--space-4); }
+  .chip {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--text-faint);
+    text-decoration: none;
+  }
+  .chip:hover { color: var(--text); border-color: var(--text-faint); }
+  .chip.active { color: var(--accent); border-color: var(--accent); }
+  .list { list-style: none; }
+</style>
