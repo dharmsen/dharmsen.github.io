@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SectionLabel from '../../../components/SectionLabel.astro';
+import HobbyPostRow from '../../../components/HobbyPostRow.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const hobbies = await getCollection('hobbies');
+  return hobbies.map((h) => ({ params: { category: h.id }, props: { hobby: h } }));
+}
+
+const { hobby } = Astro.props;
+const isProd = import.meta.env.PROD;
+
+const posts = (await getCollection('hobby-posts'))
+  .filter((p) => p.data.hobby.id === hobby.id)
+  .filter((p) => !isProd || !p.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<BaseLayout title={hobby.data.title} section="/hobby">
+  <section class="page">
+    <p class="crumb"><a href="/hobby">hobby</a> ›</p>
+    <SectionLabel label={hobby.data.title} />
+    {hobby.data.description && <p class="intro">{hobby.data.description}</p>}
+    <ul class="list">
+      {posts.map((entry) => <HobbyPostRow entry={entry} category={hobby.id} />)}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { max-width: var(--container); margin: 0 auto; padding: var(--space-12) var(--gutter); }
+  .crumb { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint); margin-bottom: var(--space-2); }
+  .crumb a { color: var(--text-faint); }
+  .intro { color: var(--text-soft); max-width: var(--measure); margin-bottom: var(--space-6); }
+  .list { list-style: none; }
+</style>

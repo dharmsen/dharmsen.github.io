@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import { getCollection } from 'astro:content';
+
+const hobbies = await getCollection('hobbies');
+const posts = await getCollection('hobby-posts');
+
+// Sort: those with `order` first (ascending by order), then alphabetical by title.
+const sorted = [...hobbies].sort((a, b) => {
+  const ao = a.data.order, bo = b.data.order;
+  if (ao != null && bo != null) return ao - bo;
+  if (ao != null) return -1;
+  if (bo != null) return 1;
+  return a.data.title.localeCompare(b.data.title);
+});
+
+const counts = new Map<string, { count: number; last: Date }>();
+for (const p of posts) {
+  const cat = p.data.hobby.id;
+  const cur = counts.get(cat) ?? { count: 0, last: new Date(0) };
+  cur.count += 1;
+  if (p.data.date > cur.last) cur.last = p.data.date;
+  counts.set(cat, cur);
+}
+---
+<BaseLayout title="Hobby" section="/hobby">
+  <section class="page">
+    <SectionLabel label="hobby" />
+    <h1>Off the clock</h1>
+    <p class="intro">Things I do when I'm not thinking about sparse routing.</p>
+
+    <ul class="grid">
+      {sorted.map((h) => {
+        const stat = counts.get(h.id);
+        const fmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        return (
+          <li class="card">
+            <a href={`/hobby/${h.id}`}>
+              {h.data.image && <img src={h.data.image} alt="" class="img" loading="lazy" />}
+              <div class="body">
+                <h2 class="title">{h.data.title}</h2>
+                {h.data.description && <p class="desc">{h.data.description}</p>}
+                <p class="meta">
+                  {stat ? `${stat.count} post${stat.count === 1 ? '' : 's'}` : 'no posts'}
+                  {stat && ` · last ${fmt.format(stat.last)}`}
+                </p>
+              </div>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { max-width: var(--container); margin: 0 auto; padding: var(--space-12) var(--gutter); }
+  h1 { font-size: var(--text-2xl); font-weight: 600; }
+  .intro { color: var(--text-soft); margin-top: var(--space-2); max-width: var(--measure); }
+  .grid { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-6); margin-top: var(--space-8); }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  .card a { display: block; color: inherit; text-decoration: none; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; transition: border-color 0.15s ease; }
+  .card a:hover { border-color: var(--accent); }
+  .img { aspect-ratio: 16 / 10; object-fit: cover; background: var(--bg-elev); }
+  .body { padding: var(--space-4); }
+  .title { font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; }
+  .desc { color: var(--text-soft); font-size: var(--text-sm); margin-top: var(--space-2); }
+  .meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint); margin-top: var(--space-3); }
+</style>

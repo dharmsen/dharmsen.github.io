@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const [posts, hobbies] = await Promise.all([
+    getCollection('hobby-posts'),
+    getCollection('hobbies'),
+  ]);
+  const hobbyIds = new Set(hobbies.map((h) => h.id));
+
+  // Build-time reference check: every post's `hobby` must point to a real hobby.
+  for (const p of posts) {
+    const ref = p.data.hobby.id;
+    if (!hobbyIds.has(ref)) {
+      throw new Error(
+        `hobby-posts/${p.id}.md references hobby "${ref}" which does not exist in src/content/hobbies/.`
+      );
+    }
+  }
+
+  return posts
+    .filter((p) => !p.data.draft || !import.meta.env.PROD)
+    .map((p) => ({
+      params: { category: p.data.hobby.id, post: p.id },
+      props: { entry: p },
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, date, tags } = entry.data;
+const fmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<BaseLayout title={title} section="/hobby">
+  <article class="post">
+    <p class="crumb">
+      <a href="/hobby">hobby</a> › <a href={`/hobby/${entry.data.hobby.id}`}>{entry.data.hobby.id}</a> ›
+    </p>
+    <h1>{title}</h1>
+    <p class="meta">
+      <span>{fmt.format(date)}</span>
+      {tags && tags.length > 0 && (
+        <>
+          <span>·</span>
+          <span>{tags.join(', ')}</span>
+        </>
+      )}
+    </p>
+    <div class="body"><Content /></div>
+    <p class="back"><a href={`/hobby/${entry.data.hobby.id}`}>← back to {entry.data.hobby.id}</a></p>
+  </article>
+</BaseLayout>
+
+<style>
+  .post { max-width: var(--measure); margin: 0 auto; padding: var(--space-12) var(--gutter); }
+  .crumb { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint); }
+  .crumb a { color: var(--text-faint); }
+  h1 { font-size: var(--text-2xl); font-weight: 600; margin-top: var(--space-2); }
+  .meta { display: flex; gap: var(--space-2); margin-top: var(--space-2); font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-faint); }
+  .body { margin-top: var(--space-8); }
+  .back { margin-top: var(--space-12); font-family: var(--font-mono); font-size: var(--text-sm); }
+</style>
