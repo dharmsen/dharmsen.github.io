@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionLabel from '../components/SectionLabel.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site } from '../data/site';
+---
+<BaseLayout title="Contact" section="/contact">
+  <section class="page">
+    <SectionLabel label="contact" />
+    <h1>Contact</h1>
+    <p class="intro">The fastest way to reach me is the form below.</p>
+
+    <ContactForm />
+
+    <p class="elsewhere">
+      Or find me on
+      <a href={site.social.scholar}>scholar</a>,
+      <a href={site.social.github}>github</a>,
+      <a href={site.social.linkedin}>linkedin</a>,
+      <a href={site.social.x}>x</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { max-width: var(--container); margin: 0 auto; padding: var(--space-12) var(--gutter); }
+  h1 { font-size: var(--text-2xl); font-weight: 600; }
+  .intro { color: var(--text-soft); margin-top: var(--space-2); max-width: var(--measure); }
+  .elsewhere {
+    margin-top: var(--space-12);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-faint);
+  }
+  .elsewhere a { color: var(--accent); }
+</style>
