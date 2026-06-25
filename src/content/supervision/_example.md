@@ -1,7 +1,7 @@
 ---
 student: "Jane Doe"
 level: "MSc"
-topic: "Efficient attention mechanisms for long-context LLMs"
+topic: "FAKE PLACEHOLDER: Efficient attention mechanisms for long-context LLMs"
 year: 2025
 role: "co-supervisor"
 ---
