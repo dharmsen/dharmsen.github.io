@@ -25,4 +25,4 @@ See [/research](/research).
 - Systems: C++, CUDA, Triton
 
 Replace this with your full CV in Markdown. Keep it visually in sync with the
-canonical `/public/cv.pdf`.
+canonical `/cv.pdf`.

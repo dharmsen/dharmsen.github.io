@@ -163,7 +163,7 @@ auto-styled as mono section labels.
 ### CV — `src/content/cv.md`
 
 Single Markdown file rendered at `/cv` with a "Download PDF" button linking
-to `/public/cv.pdf`. Keep them visually in sync by hand.
+to `/cv.pdf`. Keep them visually in sync by hand.
 
 ## 6. Adding a new collection
 
@@ -259,8 +259,12 @@ git push origin main
 
 The GitHub Actions workflow at `.github/workflows/deploy.yml` runs
 `npm run build` and uploads `dist/` to GitHub Pages. Build failures block
-deploy and email the repo owner. First-time setup: enable Actions and Pages
-in the repo settings (Pages → source: GitHub Actions).
+deploy and email the repo owner. First-time setup:
+1. Enable Actions and Pages in the repo settings (Pages → source: GitHub Actions).
+2. Create a Web3Forms access key at https://web3forms.com (no signup needed).
+3. Add it as a repository secret named `WEB3FORMS_ACCESS_KEY` (Settings →
+   Secrets and variables → Actions → New repository secret). Without this,
+   the contact form renders but submissions silently fail.
 
 ## 12. Verification commands
 

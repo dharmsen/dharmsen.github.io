@@ -1,5 +1,9 @@
 ---
 const accessKey = import.meta.env.WEB3FORMS_ACCESS_KEY;
+
+if (!accessKey) {
+  console.warn('[ContactForm] WEB3FORMS_ACCESS_KEY is not set. The contact form will render but submissions will fail until it is configured. See README §11 (Deployment).');
+}
 ---
 <form
   action="https://api.web3forms.com/submit"
