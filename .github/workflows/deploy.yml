@@ -23,7 +23,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: 20
+          node-version: 22 # Astro 6 requires Node.js >=22.12.0
           cache: npm
       - run: npm ci # dependency install/lifecycle scripts are disabled via the committed .npmrc
       - run: npm run build
