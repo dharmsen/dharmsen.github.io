@@ -17,7 +17,7 @@
     "@fontsource/eb-garamond": "^5.1.0",
     "@fontsource/inter": "^5.1.0",
     "@fontsource/jetbrains-mono": "^5.1.0",
-    "astro": "^6.4.8",
+    "astro": "^7.0.3",
     "typescript": "^5.6.3"
   },
   "devDependencies": {
