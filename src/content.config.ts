@@ -1,6 +1,16 @@
 import { defineCollection, z, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+// Build-time hardening: frontmatter URL fields emitted into href/src must be
+// http(s) or root-relative. Rejects javascript:/data:/protocol-relative schemes.
+// Empty string is allowed (fields are optional). Fails the build on a bad value.
+const safeUrl = z
+  .string()
+  .refine((u) => u === '' || /^https?:\/\//i.test(u) || /^\//.test(u), {
+    message: 'must be an http(s) or root-relative URL',
+  })
+  .optional();
+
 const publications = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/publications' }),
   schema: z.object({
@@ -9,11 +19,11 @@ const publications = defineCollection({
     venue: z.string(),
     year: z.number().int(),
     type: z.enum(['conference', 'journal', 'workshop', 'preprint', 'thesis']),
-    pdf: z.string().optional(),
+    pdf: safeUrl,
     arxiv: z.string().optional(),
     doi: z.string().optional(),
-    code: z.string().optional(),
-    slides: z.string().optional(),
+    code: safeUrl,
+    slides: safeUrl,
     highlight: z.boolean().default(false),
   }),
 });
@@ -26,7 +36,7 @@ const talks = defineCollection({
     date: z.coerce.date(),
     type: z.enum(['talk', 'poster', 'tutorial', 'invited']),
     location: z.string(),
-    slides: z.string().optional(),
+    slides: safeUrl,
   }),
 });
 
@@ -38,7 +48,7 @@ const teaching = defineCollection({
     institution: z.string(),
     year: z.number().int(),
     semester: z.string().optional(),
-    url: z.string().optional(),
+    url: safeUrl,
   }),
 });
 

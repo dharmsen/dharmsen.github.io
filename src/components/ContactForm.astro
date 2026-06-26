@@ -11,6 +11,9 @@ if (!accessKey) {
   class="form"
   data-form
 >
+  <!-- Web3Forms access_key is intentionally PUBLIC (a client-side routing identifier,
+       not a secret). Abuse is controlled via the Web3Forms dashboard Allowed-Domains
+       setting plus the botcheck honeypot below. Do not treat this value as a secret. -->
   <input type="hidden" name="access_key" value={accessKey} />
   <input type="hidden" name="subject" value="New message via dharmsen.github.io" />
   <input type="checkbox" name="botcheck" class="honeypot" tabindex="-1" autocomplete="off" />
@@ -31,6 +34,8 @@ if (!accessKey) {
   </label>
 
   <button type="submit" class="submit">send →</button>
+
+  <p class="privacy-note">Your name, email, and message are sent to our form provider (Web3Forms) and forwarded to me by email. Nothing is stored on this site and no analytics track you.</p>
 
   <p class="status" data-status hidden></p>
 </form>
@@ -100,4 +105,5 @@ if (!accessKey) {
   }
   .submit:hover { background: var(--text); }
   .status { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-soft); }
+  .privacy-note { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint); margin-top: var(--space-2); }
 </style>

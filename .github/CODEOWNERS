@@ -1,0 +1,4 @@
+# Default owner for the whole repository.
+# NOTE: CODEOWNERS is enforced only once branch protection requiring PR review is
+# enabled on `main` (Settings → Branches). Until then this is documentation.
+* @dharmsen

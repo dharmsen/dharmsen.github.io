@@ -32,6 +32,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
+    <!-- Content-Security-Policy (defense-in-depth). Inline scripts/styles are allowed
+         (no-flash theme script + Astro scoped styles are inline), so this does NOT stop
+         an inline-script XSS — instead it constrains connect/form/image/font origins and
+         blocks third-party exfiltration. connect-src/form-action allow only Web3Forms. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; object-src 'none'; base-uri 'self'" />
     <!-- No-flash theme init: must run before body paints -->
     <script is:inline>
       (function () {

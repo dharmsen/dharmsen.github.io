@@ -4,6 +4,9 @@ import SectionLabel from '../components/SectionLabel.astro';
 import { getEntry, render } from 'astro:content';
 
 const entry = await getEntry('cv', 'cv');
+if (!entry) {
+  throw new Error('cv content entry not found');
+}
 const { Content } = await render(entry);
 ---
 <BaseLayout title="CV">
